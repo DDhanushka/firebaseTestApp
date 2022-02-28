@@ -1,4 +1,12 @@
-import {Button, StyleSheet, Text, Alert, TextInput, View} from 'react-native';
+import {
+  Button,
+  StyleSheet,
+  Text,
+  Alert,
+  TextInput,
+  View,
+  ScrollView,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
@@ -110,31 +118,32 @@ const Hello = () => {
         <Button title="Update" disabled={!isUpdate} onPress={() => update()} />
       </View>
 
-      {data.map(e => (
-        <View
-          style={{
-            marginVertical: 5,
-
-            justifyContent: 'space-between',
-          }}
-          key={e.id}>
-          <Text style={{fontSize: 17, padding: 5}}>
-            {e.id} : Name: {e.name} - {e.age}
-          </Text>
-          <View style={{flexDirection: 'row'}}>
-            <Button
-              color={'tomato'}
-              title="Delete"
-              onPress={() => handleDel(e.id)}
-            />
-            <Button
-              color={'orange'}
-              title="Edit"
-              onPress={() => handleEdit(e.id)}
-            />
+      <ScrollView>
+        {data.map(e => (
+          <View
+            style={{
+              marginVertical: 5,
+              justifyContent: 'space-between',
+            }}
+            key={e.id}>
+            <Text style={{fontSize: 17, padding: 5}}>
+              Name: {e.name} / Age: {e.age}
+            </Text>
+            <View style={{flexDirection: 'row'}}>
+              <Button
+                color={'tomato'}
+                title="Delete"
+                onPress={() => handleDel(e.id)}
+              />
+              <Button
+                color={'orange'}
+                title="Edit"
+                onPress={() => handleEdit(e.id)}
+              />
+            </View>
           </View>
-        </View>
-      ))}
+        ))}
+      </ScrollView>
     </View>
   );
 };
