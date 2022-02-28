@@ -5,6 +5,8 @@ import firestore from '@react-native-firebase/firestore';
 const Hello = () => {
   const [data, setData] = useState([]);
   const [name, setName] = useState('');
+  const [isUpdate, setIsUpdate] = useState(false);
+  const [editId, setEditId] = useState('');
 
   useEffect(() => {
     return firestore()
@@ -68,6 +70,30 @@ const Hello = () => {
     ]);
   };
 
+  const handleEdit = async id => {
+    const user = await firestore().collection('Users').doc(id).get();
+    setName(user.data().name);
+    console.log(user.data().name);
+
+    setEditId(id);
+    setIsUpdate(true);
+  };
+
+  const update = () => {
+    firestore()
+      .collection('Users')
+      .doc(editId)
+      .update({
+        name,
+      })
+      .then(() => {
+        console.log('User updated!');
+      });
+    setName('');
+    setIsUpdate(false);
+    setEditId('');
+  };
+
   return (
     <View style={{flex: 1, padding: 20}}>
       <View style={{marginBottom: 20}}>
@@ -76,22 +102,37 @@ const Hello = () => {
           style={{height: 40, borderWidth: 1, padding: 10, marginBottom: 5}}
           onChangeText={e => handleOnChangeName(e)}
         />
-        <Button title="write" onPress={() => writeData()} />
+        <Button
+          title="Create"
+          onPress={() => writeData()}
+          disabled={isUpdate}
+        />
+        <Button title="Update" disabled={!isUpdate} onPress={() => update()} />
       </View>
 
       {data.map(e => (
         <View
           style={{
             marginVertical: 5,
-            flexDirection: 'row',
-            alignItems: 'center',
+
             justifyContent: 'space-between',
           }}
           key={e.id}>
-          <Text>
-            {e.id} : {e.name} - {e.age}
+          <Text style={{fontSize: 17, padding: 5}}>
+            {e.id} : Name: {e.name} - {e.age}
           </Text>
-          <Button color={'tomato'} title="X" onPress={() => handleDel(e.id)} />
+          <View style={{flexDirection: 'row'}}>
+            <Button
+              color={'tomato'}
+              title="Delete"
+              onPress={() => handleDel(e.id)}
+            />
+            <Button
+              color={'orange'}
+              title="Edit"
+              onPress={() => handleEdit(e.id)}
+            />
+          </View>
         </View>
       ))}
     </View>
