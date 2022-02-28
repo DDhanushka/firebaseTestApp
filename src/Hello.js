@@ -45,19 +45,43 @@ const Hello = () => {
     setName(txt);
   };
 
+  const handleDel = id => {
+    // console.log(id);
+
+    firestore()
+      .collection('Users')
+      .doc(id)
+      .delete()
+      .then(() => {
+        console.log('User deleted!');
+      });
+  };
+
   return (
     <View style={{flex: 1, padding: 20}}>
-      <TextInput
-        value={name}
-        style={{height: 40, borderWidth: 1, padding: 10}}
-        onChangeText={e => handleOnChangeName(e)}
-      />
-      <Button title="write" onPress={() => writeData()} />
+      <View style={{marginBottom: 20}}>
+        <TextInput
+          value={name}
+          style={{height: 40, borderWidth: 1, padding: 10, marginBottom: 5}}
+          onChangeText={e => handleOnChangeName(e)}
+        />
+        <Button title="write" onPress={() => writeData()} />
+      </View>
 
       {data.map(e => (
-        <Text key={e.id}>
-          {e.id} : {e.name} - {e.age}
-        </Text>
+        <View
+          style={{
+            marginVertical: 5,
+            flexDirection: 'row',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+          }}
+          key={e.id}>
+          <Text>
+            {e.id} : {e.name} - {e.age}
+          </Text>
+          <Button title="X" onPress={() => handleDel(e.id)} />
+        </View>
       ))}
     </View>
   );
