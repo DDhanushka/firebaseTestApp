@@ -1,4 +1,4 @@
-import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
+import {Button, StyleSheet, Text, Alert, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
@@ -48,13 +48,24 @@ const Hello = () => {
   const handleDel = id => {
     // console.log(id);
 
-    firestore()
-      .collection('Users')
-      .doc(id)
-      .delete()
-      .then(() => {
-        console.log('User deleted!');
-      });
+    Alert.alert('Delete Contact ?', 'Are you sure?', [
+      {
+        text: 'Cancel',
+        onPress: () => console.log('Cancel Pressed'),
+        style: 'cancel',
+      },
+      {
+        text: 'OK',
+        onPress: () =>
+          firestore()
+            .collection('Users')
+            .doc(id)
+            .delete()
+            .then(() => {
+              console.log('User deleted!');
+            }),
+      },
+    ]);
   };
 
   return (
@@ -80,7 +91,7 @@ const Hello = () => {
           <Text>
             {e.id} : {e.name} - {e.age}
           </Text>
-          <Button title="X" onPress={() => handleDel(e.id)} />
+          <Button color={'tomato'} title="X" onPress={() => handleDel(e.id)} />
         </View>
       ))}
     </View>
