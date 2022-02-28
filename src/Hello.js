@@ -1,9 +1,10 @@
-import {Button, StyleSheet, Text, View} from 'react-native';
+import {Button, StyleSheet, Text, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import firestore from '@react-native-firebase/firestore';
 
 const Hello = () => {
   const [data, setData] = useState([]);
+  const [name, setName] = useState('');
 
   useEffect(() => {
     return firestore()
@@ -24,19 +25,33 @@ const Hello = () => {
   }, []);
 
   const writeData = () => {
-    firestore()
-      .collection('Users')
-      .add({
-        name: 'Assss Lovelace',
-        age: 30,
-      })
-      .then(() => {
-        console.log('User added!');
-      });
+    if (name == '') {
+      alert('enter somthing');
+    } else {
+      firestore()
+        .collection('Users')
+        .add({
+          name,
+          age: 30,
+        })
+        .then(() => {
+          console.log('User added!');
+        });
+      setName('');
+    }
+  };
+
+  const handleOnChangeName = txt => {
+    setName(txt);
   };
 
   return (
     <View style={{flex: 1, padding: 20}}>
+      <TextInput
+        value={name}
+        style={{height: 40, borderWidth: 1, padding: 10}}
+        onChangeText={e => handleOnChangeName(e)}
+      />
       <Button title="write" onPress={() => writeData()} />
 
       {data.map(e => (
